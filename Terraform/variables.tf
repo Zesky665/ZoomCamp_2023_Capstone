@@ -64,7 +64,7 @@ variable "agent_extra_pip_packages" {
 
 variable "agent_image" {
   description = "Container image for the agent. This could be the name of the image in a public repo or ECR ARN."
-  default     = "zharec/week_2_prefect_agent:latest"
+  default     = "zharec/prefect_agent:latest"
   type        = string
 }
 
