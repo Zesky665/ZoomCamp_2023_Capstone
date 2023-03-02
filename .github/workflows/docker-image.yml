@@ -33,7 +33,6 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: Docker
 
 
     steps:
