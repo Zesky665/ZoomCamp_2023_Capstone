@@ -4,7 +4,7 @@ RUN pip install prefect-aws
 
 RUN pip install s3fs
 
-WORKDIR Docker
+COPY prefect/flows prefect/flows
 
 COPY login.sh .
 
