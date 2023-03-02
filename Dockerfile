@@ -4,7 +4,7 @@ RUN pip install prefect-aws
 
 RUN pip install s3fs
 
-COPY prefect/flows prefect/flows
+COPY prefect/flows opt/prefect/flows
 
 COPY login.sh .
 
