@@ -52,7 +52,7 @@ variable "agent_desired_count" {
 
 variable "agent_queue_name" {
   description = "Prefect queue that the agent should listen to."
-  default     = "Week_2"
+  default     = "default"
   type        = string
 }
 
