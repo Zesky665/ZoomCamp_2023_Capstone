@@ -122,7 +122,9 @@ jobs:
        echo "Test Test Test Test Test"
        [ -f output.json ] && echo "FILE exists."
        cat output.json
+       python3 --version
        echo "Test Test Test Test Test"
+       
        python3 deploy_blocks.py
 
        
