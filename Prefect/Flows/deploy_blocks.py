@@ -86,9 +86,9 @@ def deploy_ecs_task_block():
     # ECS Task values
     ecs_task_block_name = "flow-runner"
     ecs_task_def = data["task_definition"]["value"].replace("\"", "")
-    cpu_value = extract_value(ecs_task_def, "cpu")
-    cpu_memory = extract_value(ecs_task_def, "memory")
-    cpu_image = extract_value(ecs_task_def, "image")
+    cpu_value = ''
+    cpu_memory = ''
+    cpu_image = ''
     vpc_id = data["vpc_id"]["value"]
     cluster_arn = data["ecs-cluster"]["value"]
     execution_role_arn = data["execution_role"]["value"]
