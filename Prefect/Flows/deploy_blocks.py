@@ -21,7 +21,7 @@ def deploy_aws_credentials_block(aws_key_id, aws_key):
 @task(name="deploy_s3")
 def deploy_s3_block():
     # Opening JSON file
-    f = open('output.json', 'r', encoding='utf-8')
+    f = open('output.json')
     
     # returns JSON object as
     # a dictionary
