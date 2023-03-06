@@ -114,6 +114,7 @@ jobs:
        # Log into prefect cloud 
     - name: Prefect login
       run: |
+       pip install -U prefect
        prefect cloud login --key ${{ secrets.PREFECT_API_KEY }} --workspace ${{ secrets.PREFECT_WORKSPACE_NAME }}
        python3 Prefect/Flows/deploy_flows.py
 
