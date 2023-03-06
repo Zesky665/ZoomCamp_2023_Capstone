@@ -118,7 +118,7 @@ jobs:
        pip install pyopenssl --upgrade
        pip install s3fs prefect-aws
        prefect cloud login --key ${{ secrets.PREFECT_API_KEY }} --workspace ${{ secrets.PREFECT_WORKSPACE_NAME }}
-       python3 Prefect/Flows/deploy_flows.py
+       python3 Prefect/Flows/deploy_blocks.py
 
        
        
