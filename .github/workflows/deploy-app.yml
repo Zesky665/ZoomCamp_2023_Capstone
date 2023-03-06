@@ -76,13 +76,6 @@ jobs:
       run: |
        cd Terraform 
        terraform validate -no-color
-
-    # Generate secrets file
-    - name: Terraform Secrets
-      run: |
-       cd Terraform
-       touch secrets.tfvars
-       cat ${{ secrets.TF_SECRETS }} >> secrets.tfvars
        
     # Generates an execution plan for Terraform
     - name: Terraform Plan
