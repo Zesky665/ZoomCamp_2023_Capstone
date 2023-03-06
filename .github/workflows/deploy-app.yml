@@ -67,7 +67,7 @@ jobs:
       env: 
           name: ${{ secrets.NAME }}
           prefect_account_id: ${{ secrets.PREFECT_ACCOUNT_ID }}
-          prefect_workspace_id: ${{ secrets.PREFECT_WORKSPACE_ID }}
+          prefect_workspace_id: ${{ secrets.PREFECT_WORKSPACE_NAME }}
           prefect_api_key: ${{ secrets.PREFECT_API_KEY }}
       
     # Checks that all Terraform configuration files adhere to a canonical format
