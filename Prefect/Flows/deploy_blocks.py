@@ -40,10 +40,10 @@ def deploy_s3_block():
     logger.info(f'INFO: {f}')
    
     f.seek(0)
-    
+    contents = f.read()
     # returns JSON object as
     # a dictionary
-    data = json.loads( f.read())
+    data = json.loads(contents.decode("utf-8"))
     
     logger.info(f'INFO: {data}')
     
