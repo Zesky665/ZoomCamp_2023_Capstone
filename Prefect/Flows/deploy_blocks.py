@@ -22,7 +22,8 @@ def deploy_aws_credentials_block(aws_key_id, aws_key):
     
 @task(name="deploy_s3")
 def deploy_s3_block():
-    
+    logger = get_run_logger()
+    logger.info("INFO: Started flow deployment.")
     
     # create a Path object with the path to the file
     path1 = Path('output.json').is_file()
@@ -30,18 +31,18 @@ def deploy_s3_block():
     path3 = Path('Terraform/output.json').is_file()
     path4 = Path('../../Terraform/output.json').is_file()
 
-    print(f'{path1},{path2},{path3},{path4}')
+    logger.info(f'INFO: {path1},{path2},{path3},{path4}')
     
     # Opening JSON file
     f = open("output.json")
     
-    print(f)
+    logger.info(f'INFO: {f}')
     
     # returns JSON object as
     # a dictionary
     data = json.loads(f.read())
     
-    print(data)
+    logger.info(f'INFO: {data}')
     
     # Loading the AWSCredentials
     aws_creds = AwsCredentials.load("aws-credentials")
@@ -51,7 +52,7 @@ def deploy_s3_block():
     bucket_name = data["bucket_name"]["value"]
     bucket_path = f'{bucket_name}/{s3_block_name}'
     
-    print(f'{s3_block_name} {bucket_name} {bucket_path}')
+    logger.info(f'{s3_block_name} {bucket_name} {bucket_path}')
     
     s3 = S3Bucket(
         bucket_name=bucket_name,
