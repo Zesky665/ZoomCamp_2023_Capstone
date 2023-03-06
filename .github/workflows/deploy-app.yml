@@ -109,7 +109,6 @@ jobs:
        rm output.json
        touch output.json
        terraform output -json >> output.js
-       cp output.json ../Prefect/Flows
        
        # Log into prefect cloud 
     - name: Prefect login
