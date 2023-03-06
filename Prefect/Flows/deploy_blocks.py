@@ -21,11 +21,11 @@ def deploy_aws_credentials_block(aws_key_id, aws_key):
 @task(name="deploy_s3")
 def deploy_s3_block():
     # Opening JSON file
-    f = open('/home/runner/work/ZoomCamp_2023_Capstone/ZoomCamp_2023_Capstone/Prefect/Flows/output.json')
+    f = open('output.json', 'r', encoding='utf-8')
     
     # returns JSON object as
     # a dictionary
-    data = json.load(f)
+    data = json.loads(f)
     
     # Loading the AWSCredentials
     aws_creds = AwsCredentials.load("aws-credentials")
