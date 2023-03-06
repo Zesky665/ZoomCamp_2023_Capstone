@@ -98,7 +98,7 @@ jobs:
                            -var prefect_api_key='${{ secrets.PREFECT_API_KEY }}' \
                            -var agent_image='${{ github.event.inputs.image }}' \
                            --auto-approve \
-                           - json >> output.js
+                           -json >> output.js
        cp output.json ../prefect/flows/output.json
 
        
