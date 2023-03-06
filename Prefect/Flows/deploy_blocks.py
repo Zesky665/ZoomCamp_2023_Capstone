@@ -1,5 +1,6 @@
 import json
 import re
+from prefect import flow, task
 from prefect_aws import AwsCredentials, S3Bucket, ECSTask
 
 def extract_value(string, value):
@@ -7,6 +8,7 @@ def extract_value(string, value):
     print(found)
     return found
 
+@task(name="deploy_aws")
 def deploy_aws_credentials_block(aws_key_id, aws_key):
     
     aws_credentials = AwsCredentials(
@@ -16,6 +18,7 @@ def deploy_aws_credentials_block(aws_key_id, aws_key):
     
     aws_credentials.save("aws-creds", overwrite=True)
     
+@task(name="deploy_s3")
 def deploy_s3_block():
     # Opening JSON file
     f = open('output.json',)
@@ -69,15 +72,15 @@ def deploy_ecs_task_block():
     
     # Closing file
     f.close()
+    
+@flow()
+def deploy_blocks(aws_key_id, aws_key):
 
+    deploy_aws_credentials_block(aws_key_id, aws_key)
+    deploy_s3_block()
 
 if __name__ == "__main__":
     aws_key_id = ""
     aws_key = ""
-    deploy_aws_credentials_block(aws_key_id, aws_key)
-    deploy_s3_block()
 
-
-
-
-
+    deploy_blocks(aws_key_id, aws_key)
