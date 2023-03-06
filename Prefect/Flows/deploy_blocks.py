@@ -2,6 +2,7 @@ import json
 import re
 from prefect import flow, task
 from prefect_aws import AwsCredentials, S3Bucket, ECSTask
+from prefect import get_run_logger
 from pathlib import Path
 
 
