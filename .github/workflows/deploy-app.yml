@@ -73,11 +73,15 @@ jobs:
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Validate
       id: validate
-      run: terraform validate -no-color
+      run: |
+       cd Terraform 
+       terraform validate -no-color
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
-      run: terraform plan -var name='${{ github.event.inputs.name }}'
+      run: |
+       cd Terraform 
+       terraform plan -var name='${{ github.event.inputs.name }}'
                           -var prefect_account_id='${{ secrets.PREFECT_ACCOUNT_ID }}'
                           -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_ID }}'
                           -var prefect_api_key='${{ secrets.PREFECT_API_KEY }}'
@@ -86,7 +90,9 @@ jobs:
       # On push to "main", build or change infrastructure according to Terraform configuration files
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
     - name: Terraform Apply
-      run: terraform apply -var name='${{ github.event.inputs.name }}'
+      run: |
+       cd Terraform 
+       terraform apply -var name='${{ github.event.inputs.name }}'
                            -var prefect_account_id='${{ secrets.PREFECT_ACCOUNT_ID }}'
                            -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_ID }}'
                            -var prefect_api_key='${{ secrets.PREFECT_API_KEY }}'
@@ -94,6 +100,7 @@ jobs:
                            --auto-approve
     - name: Terraform Output
       run: |
+       cd Terraform
        terraform output -json >> output.json
        cp output.json ../prefect/flows/output.json
        
