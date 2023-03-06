@@ -23,9 +23,13 @@ def deploy_s3_block():
     # Opening JSON file
     f = open('output.json')
     
+    print(f)
+    
     # returns JSON object as
     # a dictionary
     data = json.loads(f.read())
+    
+    print(data)
     
     # Loading the AWSCredentials
     aws_creds = AwsCredentials.load("aws-credentials")
@@ -34,6 +38,8 @@ def deploy_s3_block():
     s3_block_name = "deployments"
     bucket_name = data["bucket_name"]["value"]
     bucket_path = f'{bucket_name}/{s3_block_name}'
+    
+    print(f'{s3_block_name} {bucket_name} {bucket_path}')
     
     s3 = S3Bucket(
         bucket_name=bucket_name,
