@@ -72,8 +72,8 @@ def deploy_ecs_task_block():
 
 
 if __name__ == "__main__":
-    aws_key_id = "erewrewrwerwe"
-    aws_key = "232312312312"
+    aws_key_id = ""
+    aws_key = ""
     deploy_aws_credentials_block(aws_key_id, aws_key)
     deploy_s3_block()
 
