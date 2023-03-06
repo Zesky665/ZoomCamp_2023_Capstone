@@ -23,7 +23,7 @@ on:
       image:
         description: Name of the image
         required: true
-        default: 'zharec/prefect_agent:1.0.0'
+        default: 'zharec/prefect_agent:latest'
         type: string
         
 permissions:
