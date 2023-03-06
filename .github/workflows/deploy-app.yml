@@ -97,11 +97,9 @@ jobs:
                            -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_ID }}' \
                            -var prefect_api_key='${{ secrets.PREFECT_API_KEY }}' \
                            -var agent_image='${{ github.event.inputs.image }}' \
-                           --auto-approve
-      # Generate the output.json file which containe all the needed info for the next step.                       
-    - name: Terraform Output
-      run: |
-       cd Terraform
-       terraform output -json >> output.json
+                           --auto-approve \
+                           - json >> output.js
        cp output.json ../prefect/flows/output.json
+
+       
        
