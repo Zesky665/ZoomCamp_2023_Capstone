@@ -101,6 +101,16 @@ jobs:
                            --auto-approve \
                            -json >> output.js
        cp output.json ../prefect/flows/output.json
+       
+      # The outputs of the previous step are not formated correcly, but they are required to be sent to a file so that they don't get printed to the console.
+      # This step prints out the correct outputs. 
+    - name: Terraform Output
+      run: |
+       cd Terraform 
+       rm output.json
+       touch output.json
+       terraform output -json >> output.js
+       cp output.json ../prefect/flows/output.json
 
        
        
