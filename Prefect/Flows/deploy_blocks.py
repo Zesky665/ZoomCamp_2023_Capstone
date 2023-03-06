@@ -76,7 +76,7 @@ def deploy_ecs_task_block():
     
     # returns JSON object as
     # a dictionary
-    data = json.load(f)
+    data = json.loads(f)
     
     # Loading the AWSCredentials
     aws_creds = AwsCredentials.load("aws-credentials")
