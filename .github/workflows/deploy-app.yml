@@ -95,12 +95,11 @@ jobs:
        touch output.json
        terraform apply -var name='${{ github.event.inputs.name }}' \
                            -var prefect_account_id='${{ secrets.PREFECT_ACCOUNT_ID }}' \
-                           -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_ID }}' \
+                           -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_NAME }}' \
                            -var prefect_api_key='${{ secrets.PREFECT_API_KEY }}' \
                            -var agent_image='${{ github.event.inputs.image }}' \
                            --auto-approve \
                            -json >> output.js
-       cp output.json ../prefect/flows/output.json
        
       # The outputs of the previous step are not formated correcly, but they are required to be sent to a file so that they don't get printed to the console.
       # This step prints out the correct outputs. 
@@ -110,7 +109,13 @@ jobs:
        rm output.json
        touch output.json
        terraform output -json >> output.js
-       cp output.json ../prefect/flows/output.json
+       cp output.json ../Prefect/Flows/output.json
+       
+       # Log into prefect cloud 
+    - name: Prefect login
+      run: |
+       prefect cloud login --key ${{ secrets.PREFECT_API_KEY }} --workspace ${{ secrets.PREFECT_WORKSPACE_NAME }}
+       python3 Prefect/Flows/deploy_flows.py
 
        
        
