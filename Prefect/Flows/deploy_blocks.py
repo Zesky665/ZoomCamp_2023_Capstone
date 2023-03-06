@@ -21,7 +21,7 @@ def deploy_aws_credentials_block(aws_key_id, aws_key):
 @task(name="deploy_s3")
 def deploy_s3_block():
     # Opening JSON file
-    f = open('output.js')
+    f = open('../../Terraform/output.js')
     
     # returns JSON object as
     # a dictionary
@@ -48,7 +48,7 @@ def deploy_s3_block():
 def deploy_ecs_task_block():
     
     # Opening JSON file
-    f = open('Prefect/Flows/output.js')
+    f = open('output.js')
     
     # returns JSON object as
     # a dictionary
