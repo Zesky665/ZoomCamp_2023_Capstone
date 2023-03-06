@@ -3,9 +3,14 @@ output "vpc_id" {
   value = aws_vpc.prefect_vpc.id
 }
 
-output "bucket" {
+output "bucket_arn" {
   description = "AWS S3 bucket ARN"
   value       = aws_s3_bucket.bucket.arn
+}
+
+output "bucket_name" {
+  description = "AWS S3 bucket Name"
+  value       = aws_s3_bucket.bucket.bucket
 }
 
 output "dwh" {
@@ -33,7 +38,8 @@ output "aws_ecs_service" {
     value       = aws_ecs_service.prefect_agent_service.network_configuration[0].subnets
 }
 
-output "task_definition_image" {
-    description = "ECS Task Deinition image"
+output "task_definition" {
+    description = "ECS Task Deinition"
     value       = aws_ecs_task_definition.prefect_agent_task_definition.container_definitions
 }
+
