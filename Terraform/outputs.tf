@@ -38,8 +38,4 @@ output "aws_ecs_service" {
     value       = aws_ecs_service.prefect_agent_service.network_configuration[0].subnets
 }
 
-output "task_definition" {
-    description = "ECS Task Deinition"
-    value       = aws_ecs_task_definition.prefect_agent_task_definition.container_definitions
-}
 
