@@ -1,3 +1,4 @@
+from prefect import get_run_logger
 from test_deploy import test
 from prefect.deployments import Deployment
 from prefect.filesystems import S3
@@ -14,7 +15,10 @@ deployment = Deployment.build_from_flow(
 )
 
 if __name__ == "__main__":
+    logger = get_run_logger()
+    logger.info("INFO: Started flow deployment.")
     deployment.apply()
+    logger.info("INFO: Finished flow deployment.")
 
 
 
