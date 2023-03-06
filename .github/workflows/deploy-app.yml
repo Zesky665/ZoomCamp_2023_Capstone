@@ -77,14 +77,21 @@ jobs:
        cd Terraform 
        terraform validate -no-color
 
+    # Generate secrets file
+    - name: Terraform Secrets
+      run: |
+       cd Terraform
+       touch secrets.tfvars
+       cat ${{ secrets.TF_SECRETS }} >> secrets.tfvars
+       
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: |
        cd Terraform 
-       terraform plan -var name='${{ github.event.inputs.name }}'
-                          -var prefect_account_id='${{ secrets.PREFECT_ACCOUNT_ID }}'
-                          -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_ID }}'
-                          -var prefect_api_key='${{ secrets.PREFECT_API_KEY }}'
+       terraform plan -var name='${{ github.event.inputs.name }}' \
+                          -var prefect_account_id='${{ secrets.PREFECT_ACCOUNT_ID }}' \
+                          -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_NAME }}' \
+                          -var prefect_api_key='${{ secrets.PREFECT_API_KEY }}' \
                           -var agent_image='${{ github.event.inputs.image }}'
 
       # On push to "main", build or change infrastructure according to Terraform configuration files
@@ -92,12 +99,13 @@ jobs:
     - name: Terraform Apply
       run: |
        cd Terraform 
-       terraform apply -var name='${{ github.event.inputs.name }}'
-                           -var prefect_account_id='${{ secrets.PREFECT_ACCOUNT_ID }}'
-                           -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_ID }}'
-                           -var prefect_api_key='${{ secrets.PREFECT_API_KEY }}'
-                           -var agent_image='${{ github.event.inputs.image }}'
+       terraform apply -var name='${{ github.event.inputs.name }}' \
+                           -var prefect_account_id='${{ secrets.PREFECT_ACCOUNT_ID }}' \
+                           -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_ID }}' \
+                           -var prefect_api_key='${{ secrets.PREFECT_API_KEY }}' \
+                           -var agent_image='${{ github.event.inputs.image }}' \
                            --auto-approve
+      # Generate the output.json file which containe all the needed info for the next step.                       
     - name: Terraform Output
       run: |
        cd Terraform
