@@ -2,6 +2,8 @@ import json
 import re
 from prefect import flow, task
 from prefect_aws import AwsCredentials, S3Bucket, ECSTask
+from pathlib import Path
+
 
 def extract_value(string, value):
     found = re.search(f'{value}:(.+?),', string).group(1)
@@ -20,6 +22,13 @@ def deploy_aws_credentials_block(aws_key_id, aws_key):
     
 @task(name="deploy_s3")
 def deploy_s3_block():
+    
+    
+    # create a Path object with the path to the file
+    path = Path('output.json')
+
+    print(path.is_file())
+    
     # Opening JSON file
     f = open("output.json")
     
