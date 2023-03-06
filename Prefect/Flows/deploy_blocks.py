@@ -25,9 +25,12 @@ def deploy_s3_block():
     
     
     # create a Path object with the path to the file
-    path = Path('output.json')
+    path1 = Path('output.json').is_file()
+    path2 = Path('Prefect/Flows/output.json').is_file()
+    path3 = Path('Terraform/output.json').is_file()
+    path4 = Path('../../Terraform/output.json').is_file()
 
-    print(path.is_file())
+    print(f'{path1},{path2},{path3},{path4}')
     
     # Opening JSON file
     f = open("output.json")
