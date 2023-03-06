@@ -115,13 +115,13 @@ jobs:
     - name: Prefect login
       run: |
        cd Prefect/Flows
-       pwd
        pip install -U prefect
        pip install pyopenssl --upgrade
        pip install s3fs prefect-aws
        prefect cloud login --key ${{ secrets.PREFECT_API_KEY }} --workspace ${{ secrets.PREFECT_WORKSPACE_NAME }}
        echo "Test Test Test Test Test"
        [ -f output.json ] && echo "FILE exists."
+       cat output.json
        echo "Test Test Test Test Test"
        python3 deploy_blocks.py
 
