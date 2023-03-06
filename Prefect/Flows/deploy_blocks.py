@@ -48,7 +48,7 @@ def deploy_s3_block():
 def deploy_ecs_task_block():
     
     # Opening JSON file
-    f = open('output.js')
+    f = open('Prefect/Flows/output.js')
     
     # returns JSON object as
     # a dictionary
