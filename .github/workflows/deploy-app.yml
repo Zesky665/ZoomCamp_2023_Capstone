@@ -99,7 +99,7 @@ jobs:
                            -var prefect_api_key='${{ secrets.PREFECT_API_KEY }}' \
                            -var agent_image='${{ github.event.inputs.image }}' \
                            --auto-approve \
-                           -json >> output.js
+                           -json >> output.json
        
       # The outputs of the previous step are not formated correcly, but they are required to be sent to a file so that they don't get printed to the console.
       # This step prints out the correct outputs. 
@@ -115,6 +115,7 @@ jobs:
     - name: Prefect login
       run: |
        cd Prefect/Flows
+       pwd
        pip install -U prefect
        pip install pyopenssl --upgrade
        pip install s3fs prefect-aws
