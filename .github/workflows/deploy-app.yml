@@ -92,6 +92,7 @@ jobs:
     - name: Terraform Apply
       run: |
        cd Terraform 
+       touch output.json
        terraform apply -var name='${{ github.event.inputs.name }}' \
                            -var prefect_account_id='${{ secrets.PREFECT_ACCOUNT_ID }}' \
                            -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_ID }}' \
