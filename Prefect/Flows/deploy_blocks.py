@@ -25,7 +25,7 @@ def deploy_s3_block():
     
     # returns JSON object as
     # a dictionary
-    data = json.loads(f)
+    data = json.loads(f.read())
     
     # Loading the AWSCredentials
     aws_creds = AwsCredentials.load("aws-credentials")
