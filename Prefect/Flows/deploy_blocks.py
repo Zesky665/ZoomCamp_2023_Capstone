@@ -41,7 +41,7 @@ def deploy_s3_block():
     
     # returns JSON object as
     # a dictionary
-    data = json.loads(f.read())
+    data = json.load(f)
     
     logger.info(f'INFO: {data}')
     
