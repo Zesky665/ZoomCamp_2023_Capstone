@@ -114,8 +114,8 @@ jobs:
        cd Terraform 
        rm output.json
        touch output.json
-       terraform output -json > output.json
-       cp output.json ../Prefect/Flows
+       terraform output -json > outputs.json
+       cp outputs.json ../Prefect/Flows
        
        # Log into prefect cloud 
     - name: Prefect login
@@ -129,7 +129,10 @@ jobs:
        echo "Test Test Test Test Test"
        [ -f output.json ] && echo "FILE exists."
        cat output.json
+       cat outputs.json
+       jd -set A.json B.json
        python3 --version
+       python --version
        echo "Test Test Test Test Test"
        python deploy_blocks.py
 
