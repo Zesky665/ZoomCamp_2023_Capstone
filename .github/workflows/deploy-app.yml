@@ -121,6 +121,7 @@ jobs:
     - name: Prefect login
       run: |
        cd Prefect/Flows
+       apt-get install jq
        pip install -U prefect
        pip install pyopenssl --upgrade
        pip install s3fs prefect-aws
