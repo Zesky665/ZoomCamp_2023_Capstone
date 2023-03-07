@@ -124,6 +124,7 @@ jobs:
        pip install -U prefect
        pip install pyopenssl --upgrade
        pip install s3fs prefect-aws
+       pip install pandas
        prefect cloud login --key ${{ secrets.PREFECT_API_KEY }} --workspace ${{ secrets.PREFECT_WORKSPACE_NAME }}
        echo "Test Test Test Test Test"
        [ -f output.json ] && echo "FILE exists."
