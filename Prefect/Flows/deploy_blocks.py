@@ -1,4 +1,5 @@
 import json
+import pandas as pd
 import re
 from prefect import flow, task
 from prefect_aws import AwsCredentials, S3Bucket, ECSTask
@@ -34,10 +35,9 @@ def deploy_s3_block():
 
     logger.info(f'INFO: {path1},{path2},{path3},{path4}')
     
-    with open('output.json') as user_file:
-      file_contents = user_file.read()
+    df = pd.read_json('output.json')
 
-    logger.info(f'INFO: {file_contents}')
+    logger.info(f'INFO: {df.to_string()}') 
 
     parsed_json = json.loads(file_contents)
     
