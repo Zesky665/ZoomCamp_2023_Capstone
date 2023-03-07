@@ -131,8 +131,10 @@ jobs:
        [ -f output.json ] && echo "FILE exists."
        cat output.json
        cat output.json | python -m json.tool
+       python -m json.tool output.json
        cat outputs.json
        cat outputs.json | python -m json.tool
+       python -m json.tool outputs.json
        python3 --version
        python --version
        echo "Test Test Test Test Test"
