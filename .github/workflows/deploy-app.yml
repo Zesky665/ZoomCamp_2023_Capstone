@@ -117,12 +117,6 @@ jobs:
        terraform output -json > outputs.json
        cp outputs.json ../Prefect/Flows
        
-       
-    - name: compare json
-      run: |
-       cd Prefect/Flows
-       diff output.json outputs.json
-        
        # Log into prefect cloud 
     - name: Prefect login
       run: |
@@ -136,6 +130,7 @@ jobs:
        [ -f output.json ] && echo "FILE exists."
        cat output.json
        cat outputs.json
+       diff output.json outputs.json
        python3 --version
        python --version
        echo "Test Test Test Test Test"
