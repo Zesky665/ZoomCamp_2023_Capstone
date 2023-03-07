@@ -117,12 +117,17 @@ jobs:
        terraform output -json > outputs.json
        cp outputs.json ../Prefect/Flows
        
+       
+    - name: compare json
+      uses: sergeysova/jq-action@v2
+      id: version
+      with:
+        cmd: 'jq -set output.json outputs.json'
+        
        # Log into prefect cloud 
     - name: Prefect login
       run: |
        cd Prefect/Flows
-       apt-get update
-       apt-get -y install jq
        pip install -U prefect
        pip install pyopenssl --upgrade
        pip install s3fs prefect-aws
@@ -132,7 +137,7 @@ jobs:
        [ -f output.json ] && echo "FILE exists."
        cat output.json
        cat outputs.json
-       jd -set A.json B.json
+       jq -set A.json B.json
        python3 --version
        python --version
        echo "Test Test Test Test Test"
