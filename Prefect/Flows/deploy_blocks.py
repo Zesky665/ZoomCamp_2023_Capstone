@@ -37,18 +37,14 @@ def deploy_s3_block():
     
     df = pd.read_json('output.json')
 
-    logger.info(f'INFO: {df.to_string()}') 
+    logger.info(f'INFO: {df.to_string()}')
 
-    parsed_json = json.loads(file_contents)
-    
-    logger.info(f'INFO: {parsed_json}')
-    
     # Loading the AWSCredentials
     aws_creds = AwsCredentials.load("aws-credentials")
     
     # S3 values
     s3_block_name = "deployments"
-    bucket_name = data["bucket_name"]["value"]
+    bucket_name = df["bucket_name"]["value"]
     bucket_path = f'{bucket_name}/{s3_block_name}'
     
     logger.info(f'{s3_block_name} {bucket_name} {bucket_path}')
@@ -61,7 +57,6 @@ def deploy_s3_block():
     
     s3.save("test-s3-bucket", overwrite=True)
     
-    f.close()
     
 def deploy_ecs_task_block():
     
