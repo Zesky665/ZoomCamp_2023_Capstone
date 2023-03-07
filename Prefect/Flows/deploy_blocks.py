@@ -34,13 +34,14 @@ def deploy_s3_block():
 
     logger.info(f'INFO: {path1},{path2},{path3},{path4}')
     
-    # JSON file
-    f = open ('output.json', "r")
+    with open('output.json') as user_file:
+      file_contents = user_file.read()
 
-    # Reading from file
-    data = json.loads(f.read())
+    logger.info(f'INFO: {file_contents}')
+
+    parsed_json = json.loads(file_contents)
     
-    logger.info(f'INFO: {data}')
+    logger.info(f'INFO: {parsed_json}')
     
     # Loading the AWSCredentials
     aws_creds = AwsCredentials.load("aws-credentials")
