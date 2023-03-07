@@ -41,7 +41,7 @@ def deploy_s3_block():
 
     # returns JSON object as
     # a dictionary
-    data = json.load(f.decode("utf-8"))
+    data = json.load(str(f))
     
     logger.info(f'INFO: {data}')
     
