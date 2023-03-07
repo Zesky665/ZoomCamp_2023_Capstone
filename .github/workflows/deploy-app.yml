@@ -105,7 +105,7 @@ jobs:
                            -var prefect_api_key='${{ secrets.PREFECT_API_KEY }}' \
                            -var agent_image='${{ github.event.inputs.image }}' \
                            --auto-approve \
-                           -json >> output.json
+                           -json >> waste.json
        
       # The outputs of the previous step are not formated correcly, but they are required to be sent to a file so that they don't get printed to the console.
       # This step prints out the correct outputs. 
@@ -116,6 +116,7 @@ jobs:
        touch output.json
        chmod +x output.sh
        ./output.sh
+       cat outputs.json
        cp outputs.json ../Prefect/Flows
        
        # Log into prefect cloud 
@@ -130,11 +131,7 @@ jobs:
        echo "Test Test Test Test Test"
        [ -f output.json ] && echo "FILE exists."
        cat output.json
-       cat output.json | python -m json.tool
-       python -m json.tool output.json
        cat outputs.json
-       cat outputs.json | python -m json.tool
-       python -m json.tool outputs.json
        python3 --version
        python --version
        echo "Test Test Test Test Test"
