@@ -59,7 +59,7 @@ def deploy_s3_block():
     )
     
     s3.save("test-s3-bucket", overwrite=True)
-    dirty_json.close()
+
     
 def deploy_ecs_task_block():
     
