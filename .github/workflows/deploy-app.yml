@@ -118,10 +118,8 @@ jobs:
        chmod +x output.sh
        ./output.sh
        cat outputs.json
-       terraform output -json test.json | sed -n 2p > test.json
-       cat test.json
        cp outputs.json ../Prefect/Flows
-       cp test.json ../Prefect/Flows
+
        
        # Log into prefect cloud 
     - name: Prefect login
