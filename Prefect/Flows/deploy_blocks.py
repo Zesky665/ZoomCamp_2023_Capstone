@@ -28,15 +28,15 @@ def deploy_s3_block():
     logger.info("INFO: Started flow deployment.")
     
     # create a Path object with the path to the file
-    path1 = Path('output.json').is_file()
-    path2 = Path('Prefect/Flows/output.json').is_file()
-    path3 = Path('Terraform/output.json').is_file()
-    path4 = Path('../../Terraform/output.json').is_file()
+    path1 = Path('outputs.json').is_file()
+    path2 = Path('Prefect/Flows/outputs.json').is_file()
+    path3 = Path('Terraform/outputs.json').is_file()
+    path4 = Path('../../Terraform/outputs.json').is_file()
 
     logger.info(f'INFO: {path1},{path2},{path3},{path4}')
     
     # Opening JSON file
-    f = open('output.json')
+    f = open('outputs.json')
   
     # returns JSON object as 
     # a dictionary
