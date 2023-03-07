@@ -130,8 +130,7 @@ jobs:
        cat output.json
        python3 --version
        echo "Test Test Test Test Test"
-       
-       python3 deploy_blocks.py
+       python deploy_blocks.py
 
        
        
