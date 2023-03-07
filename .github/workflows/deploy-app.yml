@@ -114,7 +114,7 @@ jobs:
        cd Terraform 
        rm output.json
        touch output.json
-       terraform output -json >> output.json
+       terraform output -json > output.json
        cp output.json ../Prefect/Flows
        
        # Log into prefect cloud 
