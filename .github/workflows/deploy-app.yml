@@ -119,10 +119,9 @@ jobs:
        
        
     - name: compare json
-      uses: sergeysova/jq-action@v2
-      id: version
-      with:
-        cmd: 'jq -set output.json outputs.json'
+      run: |
+       cd Prefect/Flows
+       diff output.json outputs.json
         
        # Log into prefect cloud 
     - name: Prefect login
@@ -137,7 +136,6 @@ jobs:
        [ -f output.json ] && echo "FILE exists."
        cat output.json
        cat outputs.json
-       jq -set A.json B.json
        python3 --version
        python --version
        echo "Test Test Test Test Test"
