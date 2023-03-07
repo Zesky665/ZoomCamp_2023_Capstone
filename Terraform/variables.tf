@@ -23,7 +23,6 @@ variable "prefect_workspace_id" {
 variable "prefect_api_key" {
   description = "Prefect cloud API key"
   type        = string
-  sensitive   = true
 }
 
 variable "agent_task_role_arn" {
