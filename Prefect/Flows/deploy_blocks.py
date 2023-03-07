@@ -36,7 +36,7 @@ def deploy_s3_block():
     logger.info(f'INFO: {path1},{path2},{path3},{path4}')
     
     # Opening JSON file
-    f = open('outputs.json')
+    f = open('output.json')
   
     # returns JSON object as 
     # a dictionary
