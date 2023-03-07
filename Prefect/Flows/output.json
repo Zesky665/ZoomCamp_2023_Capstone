@@ -6,44 +6,43 @@
       "string"
     ],
     "value": [
-      "subnet-07ba6dc76887e9999",
-      "subnet-0eeec6b4a75b89999"
+      "subnet-07ba6dc76887e6282",
+      "subnet-0eeec6b4a75b82a12"
     ]
   },
   "bucket_arn": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:s3:::my-zoomcsdfdsf-sdfdsfdsf-dfdfdsfsdfs-zharec"
+    "value": "arn:aws:s3:::my-zoomcamp-capstone-bucket-zharec"
   },
   "bucket_name": {
     "sensitive": false,
     "type": "string",
-    "value": "my-zoomcsdfdsf-sdfdsfdsf-dfdfdsfsdfs-zharec"
+    "value": "my-zoomcamp-capstone-bucket-zharec"
   },
   "dwh": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:redshift:eu-central-1:***:cluster:zoomcsdfdsf-sdfdsfdsf-dfdfdsfsdfs-dwh"
+    "value": "arn:aws:redshift:eu-central-1:229947305276:cluster:zoomcamp-capstone-dwh"
   },
   "ecs-cluster": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:ecs:eu-central-1:***:cluster/sdfdsfdsf-cluster"
+    "value": "arn:aws:ecs:eu-central-1:229947305276:cluster/capstone-cluster"
   },
   "execution_role": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:iam::***:role/prefect-sdfdsfdsf-sdfdsfdsf-sdfdsfdsf-prefect-default"
+    "value": "arn:aws:iam::229947305276:role/prefect-agent-execution-role-prefect-default"
   },
   "task_role": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:iam::***:role/prefect-sdfdsfdsf-sdfdsfdsf-sdfdsfdsf-prefect-default"
+    "value": "arn:aws:iam::229947305276:role/prefect-agent-task-role-prefect-default"
   },
   "vpc_id": {
     "sensitive": false,
     "type": "string",
-    "value": "vpc-0d4bcadfasdfdsfdsf"
+    "value": "vpc-0d4bcadfa01f1d2ca"
   }
 }
-
