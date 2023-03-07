@@ -50,8 +50,6 @@ jobs:
       uses: hashicorp/setup-terraform@v1
       with:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-        terraform_version: 0.13.5
-        terraform_wrapper: false
         
     # Initializes secret values to be used in the workflow. 
     - name: Configure AWS Credentials Action For GitHub Actions
@@ -119,7 +117,10 @@ jobs:
        chmod +x output.sh
        ./output.sh
        cat outputs.json
+       terraform output -json test.json | sed -n 2p > test.json
+       cat test.json
        cp outputs.json ../Prefect/Flows
+       cp test.json ../Prefect/Flows
        
        # Log into prefect cloud 
     - name: Prefect login
