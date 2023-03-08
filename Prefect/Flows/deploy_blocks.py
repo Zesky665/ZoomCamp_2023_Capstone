@@ -44,7 +44,7 @@ def deploy_s3_block():
     data = json.load(f)
 
     # Loading the AWSCredentials
-    aws_creds = AwsCredentials.load("aws-credentials")
+    aws_creds = AwsCredentials.load("aws-creds")
     
     # S3 values
     s3_block_name = "deployments"
