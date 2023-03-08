@@ -1,4 +1,5 @@
 import json
+import os
 import pandas as pd
 import re
 from prefect import flow, task
@@ -98,5 +99,11 @@ def deploy_blocks(aws_key_id, aws_key):
 if __name__ == "__main__":
     aws_key_id = ""
     aws_key = ""
-
+    
+    if ("AWS_ACCOUNT_KEY_ID" in os.environ):
+        aws_key_id = os.environ['AWS_ACCOUNT_KEY_ID']
+ 
+    if ("AWS_ACCOUNT_KEY" in os.environ):
+        aws_key_id = os.environ['AWS_ACCOUNT_KEY']
+    
     deploy_blocks(aws_key_id, aws_key)
