@@ -100,10 +100,10 @@ if __name__ == "__main__":
     aws_key_id = ""
     aws_key = ""
     
-    if ("AWS_ACCOUNT_KEY_ID" in os.environ):
-        aws_key_id = os.environ['AWS_ACCOUNT_KEY_ID']
+    if ("aws_key_id" in os.environ):
+        aws_key_id = os.environ['aws_key_id']
  
-    if ("AWS_ACCOUNT_KEY" in os.environ):
-        aws_key_id = os.environ['AWS_ACCOUNT_KEY']
+    if ("aws_key" in os.environ):
+        aws_key_id = os.environ['aws_key']
     
     deploy_blocks(aws_key_id, aws_key)
