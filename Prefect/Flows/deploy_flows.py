@@ -20,13 +20,13 @@ def deploy_test_flow():
 
 @flow()
 def deploy_flows():
-    deploy_test_flow()
-
-if __name__ == "__main__":
     logger = get_run_logger()
     logger.info("INFO: Started flow deployment.")
-    deploy_flows()
+    deploy_test_flow()
     logger.info("INFO: Finished flow deployment.")
+
+if __name__ == "__main__":
+    deploy_flows()
 
 
 
