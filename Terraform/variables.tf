@@ -25,6 +25,11 @@ variable "prefect_api_key" {
   type        = string
 }
 
+variable "redshift_password" {
+  description = "Redshift password"
+  type        = string
+}
+
 variable "agent_task_role_arn" {
   description = "Optional task role ARN to pass to the agent. If not defined, a task role will be created."
   default     = null
