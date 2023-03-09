@@ -118,8 +118,8 @@ jobs:
        cp outputs.json ../Prefect/Flows
 
        
-       # Log into prefect cloud 
-    - name: Prefect login
+       # Log into prefect cloud and deploy flows and blocks
+    - name: Prefect Deploy
       run: |
        cd Prefect/Flows
        pip install -U prefect
@@ -127,8 +127,8 @@ jobs:
        pip install s3fs prefect-aws
        pip install pandas
        prefect cloud login --key ${{ secrets.PREFECT_API_KEY }} --workspace ${{ secrets.PREFECT_WORKSPACE_NAME }}
-       cat outputs.json
        python deploy_blocks.py
+       python deploy_flows.py
       env: 
           aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
