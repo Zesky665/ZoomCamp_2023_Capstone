@@ -92,6 +92,7 @@ jobs:
                           -var prefect_account_id='${{ secrets.PREFECT_ACCOUNT_ID }}' \
                           -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_NAME }}' \
                           -var prefect_api_key='${{ secrets.PREFECT_API_KEY }}' \
+                          -var redshift_password='${{ secrets.REDSHIFT_PASSWORD }}' \
                           -var agent_image='${{ github.event.inputs.image }}'
 
       # On push to "main", build or change infrastructure according to Terraform configuration files
@@ -104,6 +105,7 @@ jobs:
                            -var prefect_account_id='${{ secrets.PREFECT_ACCOUNT_ID }}' \
                            -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_NAME }}' \
                            -var prefect_api_key='${{ secrets.PREFECT_API_KEY }}' \
+                           -var redshift_password='${{ secrets.REDSHIFT_PASSWORD }}' \
                            -var agent_image='${{ github.event.inputs.image }}' \
                            --auto-approve \
                            -json >> waste.json
