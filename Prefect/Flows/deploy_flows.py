@@ -1,4 +1,4 @@
-from prefect import get_run_logger
+from prefect import get_run_logger, flow
 from test_deploy import test
 from prefect.deployments import Deployment
 from prefect.filesystems import S3
