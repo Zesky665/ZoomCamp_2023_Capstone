@@ -1,10 +1,10 @@
-from prefect import get_run_logger, flow
+from prefect import get_run_logger, flow, task
 from test_deploy import test
 from prefect.deployments import Deployment
 from prefect.filesystems import S3
 
-@flow()
-def deploy_flows():
+@task()
+def deploy_test_flow():
     s3_block = S3.load("deployments")
 
     deployment = Deployment.build_from_flow(
@@ -17,6 +17,10 @@ def deploy_flows():
     )
     
     deployment.apply()
+
+@flow()
+def deploy_flows():
+    deploy_test_flow()
 
 if __name__ == "__main__":
     logger = get_run_logger()
