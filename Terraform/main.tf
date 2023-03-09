@@ -21,9 +21,6 @@ terraform {
       version = "4.33.0"
     }
   }
-
-  // This is the required version of Terraform.
-  required_version = "~> 1.3.7"
 }
 
 
