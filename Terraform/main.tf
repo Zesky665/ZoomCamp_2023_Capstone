@@ -58,7 +58,7 @@ resource "aws_redshift_cluster" "zoomcamp-capstone-dwh" {
   cluster_identifier = "zoomcamp-capstone-dwh"
   database_name      = "capstone_db"
   master_username    = "zhare_c"
-  master_password    = var.prefect_api_key
+  master_password    = var.redshift_password
   node_type          = "dc2.large"
   cluster_type       = "single-node"
 
