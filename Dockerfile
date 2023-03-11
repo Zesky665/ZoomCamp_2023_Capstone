@@ -8,7 +8,7 @@ RUN pip install SQLAlchemy
 
 RUN pip install psycopg2-binary
 
-RUN pip install prefect_sqlalchemy
+RUN pip install prefect-sqlalchemy
 
 RUN pip install redshift_connector
 
