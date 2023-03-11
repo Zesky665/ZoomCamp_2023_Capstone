@@ -43,3 +43,6 @@ dask-worker-space/
 # Misc
 __init__.py
 temp*.py
+
+# output file
+*.json

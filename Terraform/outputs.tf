@@ -38,4 +38,22 @@ output "aws_ecs_service" {
     value       = aws_ecs_service.prefect_agent_service.network_configuration[0].subnets
 }
 
+output "redshift_host" {
+  description   = "Redshift host adress"
+  value         = aws_redshift_cluster.zoomcamp-capstone-dwh.endpoint
+}
+
+output "redshift_database" {
+  description   = "Redshift database"
+  value         = aws_redshift_cluster.zoomcamp-capstone-dwh.database_name
+}
+output "redshift_user" {
+  description   = "Redshift admin user"
+  value         = aws_redshift_cluster.zoomcamp-capstone-dwh.master_username
+}
+output "redshift_password" {
+  description   = "Redshift dataabse password"
+  value         = aws_redshift_cluster.zoomcamp-capstone-dwh.master_password
+  sensitive     = true
+}
 

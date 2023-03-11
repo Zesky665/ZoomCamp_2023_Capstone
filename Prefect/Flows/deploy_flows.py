@@ -1,11 +1,12 @@
 from prefect import get_run_logger, flow, task
 from test_deploy import test
+from redshift import redshift_setup
 from prefect.deployments import Deployment
-from prefect.filesystems import S3
+from prefect_aws import S3Bucket, ECSTask
 
 @task()
 def deploy_test_flow():
-    s3_block = S3.load("deployments")
+    s3_block = S3Bucket.load("capstone-s3-bucket")
 
     deployment = Deployment.build_from_flow(
         flow=test,
@@ -20,11 +21,26 @@ def deploy_test_flow():
 
 @task()
 def deploy_deploy_flow():
-    s3_block = S3.load("deployments")
+    s3_block = S3Bucket.load("capstone-s3-bucket")
 
     deployment = Deployment.build_from_flow(
         flow=deploy_flows,
         name="deploy-deploy",
+        parameters={"name": "Deploy"},
+        infra_overrides={"env": {"PREFECT_LOGGING_LEVEL": "DEBUG"}},
+        work_queue_name="default",
+        storage=s3_block,
+    )
+    
+    deployment.apply()
+    
+@task()
+def deploy_redshift_flow():
+    s3_block = S3Bucket.load("capstone-s3-bucket")
+
+    deployment = Deployment.build_from_flow(
+        flow=redshift_setup,
+        name="deploy-redshift",
         parameters={"name": "Deploy"},
         infra_overrides={"env": {"PREFECT_LOGGING_LEVEL": "DEBUG"}},
         work_queue_name="default",

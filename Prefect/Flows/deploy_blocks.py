@@ -4,6 +4,7 @@ import pandas as pd
 import re
 from prefect import flow, task
 from prefect_aws import AwsCredentials, S3Bucket, ECSTask
+from prefect_sqlalchemy import SqlAlchemyConnector, ConnectionComponents, SyncDriver
 from prefect import get_run_logger
 from pathlib import Path
 
@@ -27,15 +28,7 @@ def deploy_aws_credentials_block(aws_key_id, aws_key):
 def deploy_s3_block():
     logger = get_run_logger()
     logger.info("INFO: Started flow deployment.")
-    
-    # create a Path object with the path to the file
-    path1 = Path('outputs.json').is_file()
-    path2 = Path('Prefect/Flows/outputs.json').is_file()
-    path3 = Path('Terraform/outputs.json').is_file()
-    path4 = Path('../../Terraform/outputs.json').is_file()
 
-    logger.info(f'INFO: {path1},{path2},{path3},{path4}')
-    
     # Opening JSON file
     f = open('outputs.json')
   
@@ -59,7 +52,38 @@ def deploy_s3_block():
         basepath=bucket_path
     )
     
-    s3.save("test-s3-bucket", overwrite=True)
+    s3.save("capstone-s3-bucket", overwrite=True)
+    
+task(name="deploy redshift credentials")
+def deploy_redshift_credentials():
+    logger = get_run_logger()
+    logger.info("INFO: Started flow deployment.")
+
+    # Opening JSON file
+    f = open('outputs.json')
+  
+    # returns JSON object as 
+    # a dictionary
+    data = json.load(f)
+
+    # Redshift DB values
+    host = data["host"]["value"].split(":")[0]
+    database = data["database"]["value"]
+    port = data["port"]["value"]
+    username = data["username"]["value"]
+    password = data["password"]["value"]
+    
+    connector = SqlAlchemyConnector(
+        connection_info=ConnectionComponents(
+            host=host,
+            database=database,
+            port=port,
+            username= username,
+            password= password,
+        )
+    )
+
+    connector.save("redshift-credentials", overwrite=True)
 
     
 def deploy_ecs_task_block():
