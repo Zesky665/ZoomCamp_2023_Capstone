@@ -128,6 +128,10 @@ jobs:
        pip install pyopenssl --upgrade
        pip install s3fs prefect-aws
        pip install pandas
+       pip install SQLAlchemy
+       pip install psycopg2-binary
+       pip install prefect-sqlalchemy
+       pip install redshift_connector
        prefect cloud login --key ${{ secrets.PREFECT_API_KEY }} --workspace ${{ secrets.PREFECT_WORKSPACE_NAME }}
        python deploy_blocks.py
        python deploy_flows.py
