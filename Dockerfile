@@ -12,7 +12,7 @@ RUN pip install prefect_sqlalchemy
 
 RUN pip install redshift_connector
 
-COPY prefect/flows opt/prefect/flows
+COPY Prefect/Flows opt/Prefect/Flows
 
 COPY login.sh .
 
