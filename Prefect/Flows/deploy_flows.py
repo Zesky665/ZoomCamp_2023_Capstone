@@ -13,7 +13,7 @@ def deploy_test_flow():
     deployment = Deployment.build_from_flow(
         flow=test,
         name="test-deploy",
-        parameters={"name": "Test"},
+        parameters={},
         infra_overrides={"env": {"PREFECT_LOGGING_LEVEL": "DEBUG"}},
         work_queue_name="default",
         storage=s3_block,
@@ -31,7 +31,7 @@ def deploy_deploy_flow():
     deployment = Deployment.build_from_flow(
         flow=deploy_flows,
         name="deploy-deploy",
-        parameters={"name": "Deploy Flows"},
+        parameters={},
         infra_overrides={"env": {"PREFECT_LOGGING_LEVEL": "DEBUG"}},
         work_queue_name="default",
         storage=s3_block,
@@ -49,7 +49,7 @@ def deploy_redshift_flow():
     deployment = Deployment.build_from_flow(
         flow=redshift_setup,
         name="deploy-redshift",
-        parameters={"name": "Deploy Redshift"},
+        parameters={},
         infra_overrides={"env": {"PREFECT_LOGGING_LEVEL": "DEBUG"}},
         work_queue_name="default",
         storage=s3_block,
