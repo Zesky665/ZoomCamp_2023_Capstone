@@ -119,7 +119,7 @@ def deploy_blocks(aws_key_id, aws_key):
 
     deploy_aws_credentials_block(aws_key_id, aws_key)
     deploy_s3_block()
-    deploy_redshift_credentials():
+    deploy_redshift_credentials()
     
 
 if __name__ == "__main__":
