@@ -90,7 +90,7 @@ jobs:
        cd Terraform 
        terraform plan -var name='${{ github.event.inputs.name }}' \
                           -var prefect_account_id='${{ secrets.PREFECT_ACCOUNT_ID }}' \
-                          -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_NAME }}' \
+                          -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_ID }}' \
                           -var prefect_api_key='${{ secrets.PREFECT_API_KEY }}' \
                           -var redshift_password='${{ secrets.REDSHIFT_PASSWORD }}' \
                           -var agent_image='${{ github.event.inputs.image }}'
@@ -103,7 +103,7 @@ jobs:
        touch output.json
        terraform apply -var name='${{ github.event.inputs.name }}' \
                            -var prefect_account_id='${{ secrets.PREFECT_ACCOUNT_ID }}' \
-                           -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_NAME }}' \
+                           -var prefect_workspace_id='${{ secrets.PREFECT_WORKSPACE_ID }}' \
                            -var prefect_api_key='${{ secrets.PREFECT_API_KEY }}' \
                            -var redshift_password='${{ secrets.REDSHIFT_PASSWORD }}' \
                            -var agent_image='${{ github.event.inputs.image }}' \
@@ -132,7 +132,7 @@ jobs:
        pip install psycopg2-binary
        pip install prefect-sqlalchemy
        pip install redshift_connector
-       prefect cloud login --key ${{ secrets.PREFECT_API_KEY }} --workspace ${{ secrets.PREFECT_WORKSPACE_NAME }}
+       prefect cloud login --key ${{ secrets.PREFECT_API_KEY }} --workspace ${{ secrets.PREFECT_WORKSPACE_ID }}
        python deploy_blocks.py
        python deploy_flows.py
       env: 
