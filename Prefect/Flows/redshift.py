@@ -22,7 +22,7 @@ def redshift_setup():
         database=database_block.database,
         port=int(database_block.port),
         user=database_block.username,
-        password=redshift_secret
+        password=redshift_secret.get()
     )
     cursor = conn.cursor()
     cursor.execute("create table category (catid int, cargroup varchar, catname varchar, catdesc varchar)")
