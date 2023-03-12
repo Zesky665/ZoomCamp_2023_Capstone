@@ -80,6 +80,7 @@ def deploy_redshift_credentials():
     
     connector = SqlAlchemyConnector(
         connection_info=ConnectionComponents(
+            driver=SyncDriver.POSTGRESQL_PSYCOPG2,
             host=host,
             database=database,
             port=port,
