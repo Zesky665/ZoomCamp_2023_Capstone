@@ -4,7 +4,7 @@ import pandas as pd
 import re
 from prefect import flow, task
 from prefect_aws import AwsCredentials, S3Bucket, ECSTask
-from prefect_sqlalchemy import SqlAlchemyConnector, ConnectionComponents, SyncDriver
+from prefect_sqlalchemy import ConnectionComponents, SyncDriver, DatabaseCredentials
 from prefect import get_run_logger
 from pathlib import Path
 
@@ -78,7 +78,7 @@ def deploy_redshift_credentials():
     username = data["redshift_user"]["value"]
     password = data["redshift_password"]["value"]
     
-    connector = SqlAlchemyConnector(
+    sqlalchemy_credentials = DatabaseCredentials(
         connection_info=ConnectionComponents(
             driver=SyncDriver.POSTGRESQL_PSYCOPG2,
             host=host,
@@ -89,7 +89,7 @@ def deploy_redshift_credentials():
         )
     )
 
-    connector.save("redshift-credentials", overwrite=True)
+    sqlalchemy_credentials.save("redshift-credentials", overwrite=True)
     logger.info("INFO: Finished redshift block deployment.")
     
 def deploy_ecs_task_block():
