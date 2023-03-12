@@ -43,6 +43,11 @@ output "redshift_host" {
   value         = aws_redshift_cluster.zoomcamp-capstone-dwh.endpoint
 }
 
+output "redshift_port" {
+  description   = "Redshift port"
+  value         = aws_redshift_cluster.zoomcamp-capstone-dwh.port
+}
+
 output "redshift_database" {
   description   = "Redshift database"
   value         = aws_redshift_cluster.zoomcamp-capstone-dwh.database_name
