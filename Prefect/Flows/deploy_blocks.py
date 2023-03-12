@@ -79,14 +79,12 @@ def deploy_redshift_credentials():
     password = data["redshift_password"]["value"]
     
     sqlalchemy_credentials = DatabaseCredentials(
-        connection_info=ConnectionComponents(
-            driver=SyncDriver.POSTGRESQL_PSYCOPG2,
-            host=host,
-            database=database,
-            port=port,
-            username= username,
-            password= password,
-        )
+        driver=SyncDriver.POSTGRESQL_PSYCOPG2,
+        host=host,
+        database=database,
+        port=port,
+        username=username,
+        password=password,
     )
 
     sqlalchemy_credentials.save("redshift-credentials", overwrite=True)
