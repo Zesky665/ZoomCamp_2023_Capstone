@@ -5,6 +5,7 @@ import re
 from prefect import flow, task
 from prefect_aws import AwsCredentials, S3Bucket, ECSTask
 from prefect_sqlalchemy import ConnectionComponents, SyncDriver, DatabaseCredentials
+from prefect.blocks.system import Secret
 from prefect import get_run_logger
 from pathlib import Path
 
@@ -58,6 +59,28 @@ def deploy_s3_block():
     
     s3.save("capstone-s3-bucket", overwrite=True)
     logger.info("INFO: Finished se bucket block deployment.")
+    
+task(name="deploy secret value")
+def deploy_redshift_password():
+    logger = get_run_logger()
+    logger.info("INFO: Started redshift secret deployment.")
+
+    # Opening JSON file
+    f = open('outputs.json')
+  
+    # returns JSON object as 
+    # a dictionary
+    data = json.load(f)
+
+    # Redshift DB values
+    password = data["redshift_password"]["value"]
+    
+    secret = Secret(
+        value=password,
+    )
+
+    secret.save("redshift-password", overwrite=True)
+    logger.info("INFO: Finished redshift secret deployment.")
     
 task(name="deploy redshift credentials")
 def deploy_redshift_credentials():
@@ -123,6 +146,7 @@ def deploy_blocks(aws_key_id, aws_key):
 
     deploy_aws_credentials_block(aws_key_id, aws_key)
     deploy_s3_block()
+    deploy_redshift_password()
     deploy_redshift_credentials()
     
 

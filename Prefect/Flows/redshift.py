@@ -1,4 +1,5 @@
 from prefect_sqlalchemy import DatabaseCredentials
+from prefect.blocks.system import Secret
 from prefect import flow, task, get_run_logger
 import redshift_connector
 
@@ -11,15 +12,17 @@ def logger_task():
 @flow()
 def redshift_setup():
     database_block = DatabaseCredentials.load("redshift-credentials")
+    redshift_secret = Secret.load("redshift-password")
     logger = logger_task()
     logger.info("INFO : Starting.")
     logger.info("INFO : Connecting to Redshift.")
+    logger.info(f'password ${database_block.password}')
     conn = redshift_connector.connect(
         host=database_block.host,
         database=database_block.database,
-        port=database_block.port,
+        port=int(database_block.port),
         user=database_block.username,
-        password=database_block.password
+        password=redshift_secret
     )
     cursor = conn.cursor()
     cursor.execute("create table category (catid int, cargroup varchar, catname varchar, catdesc varchar)")
