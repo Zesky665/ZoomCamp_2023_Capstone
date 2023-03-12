@@ -64,6 +64,7 @@ def deploy_flows():
     logger.info("INFO: Started flow deployment.")
     deploy_test_flow()
     deploy_deploy_flow()
+    deploy_redshift_flow()
     logger.info("INFO: Finished flow deployment.")
 
 if __name__ == "__main__":
