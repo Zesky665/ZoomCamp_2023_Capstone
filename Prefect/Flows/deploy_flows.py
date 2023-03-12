@@ -6,6 +6,8 @@ from prefect_aws import S3Bucket, ECSTask
 
 @task()
 def deploy_test_flow():
+    logger = get_run_logger()
+    logger.info("INFO: Started test flow deployment.")
     s3_block = S3Bucket.load("capstone-s3-bucket")
 
     deployment = Deployment.build_from_flow(
@@ -18,9 +20,12 @@ def deploy_test_flow():
     )
     
     deployment.apply()
+    logger.info("INFO: Finished test flow deployment.")
 
 @task()
 def deploy_deploy_flow():
+    logger = get_run_logger()
+    logger.info("INFO: Started deploy flow deployment.")
     s3_block = S3Bucket.load("capstone-s3-bucket")
 
     deployment = Deployment.build_from_flow(
@@ -33,9 +38,12 @@ def deploy_deploy_flow():
     )
     
     deployment.apply()
+    logger.info("INFO: Finished deploy flow deployment.")
     
 @task()
 def deploy_redshift_flow():
+    logger = get_run_logger()
+    logger.info("INFO: Started redshift flow deployment.")
     s3_block = S3Bucket.load("capstone-s3-bucket")
 
     deployment = Deployment.build_from_flow(
@@ -48,6 +56,7 @@ def deploy_redshift_flow():
     )
     
     deployment.apply()
+    logger.info("INFO: Finished redshift flow deployment.")
     
 @flow()
 def deploy_flows():
