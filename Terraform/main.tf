@@ -57,7 +57,6 @@ resource "aws_secretsmanager_secret_version" "prefect_api_key_version" {
 resource "aws_redshift_cluster" "zoomcamp-capstone-dwh" {
   cluster_identifier = "zoomcamp-capstone-dwh"
   database_name      = "capstone_db"
-  port               = 5439
   master_username    = "zhare_c"
   master_password    = var.redshift_password
   node_type          = "dc2.large"
