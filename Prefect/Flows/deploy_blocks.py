@@ -67,11 +67,11 @@ def deploy_redshift_credentials():
     data = json.load(f)
 
     # Redshift DB values
-    host = data["host"]["value"].split(":")[0]
-    database = data["database"]["value"]
-    port = data["port"]["value"]
-    username = data["username"]["value"]
-    password = data["password"]["value"]
+    host = data["redshift_host"]["value"].split(":")[0]
+    database = data["redshift_database"]["value"]
+    port = data["redshift_port"]["value"]
+    username = data["redshift_user"]["value"]
+    password = data["redshift_password"]["value"]
     
     connector = SqlAlchemyConnector(
         connection_info=ConnectionComponents(
