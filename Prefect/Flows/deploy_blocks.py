@@ -16,6 +16,8 @@ def extract_value(string, value):
 
 @task(name="deploy_aws")
 def deploy_aws_credentials_block(aws_key_id, aws_key):
+    logger = get_run_logger()
+    logger.info("INFO: Started aws creds block deployment.")
     
     aws_credentials = AwsCredentials(
     aws_access_key_id = aws_key_id,
@@ -24,10 +26,12 @@ def deploy_aws_credentials_block(aws_key_id, aws_key):
     
     aws_credentials.save("aws-creds", overwrite=True)
     
+    logger.info("INFO: Finished aws creds block deployment.")
+    
 @task(name="deploy_s3")
 def deploy_s3_block():
     logger = get_run_logger()
-    logger.info("INFO: Started flow deployment.")
+    logger.info("INFO: Started s3 block deployment.")
 
     # Opening JSON file
     f = open('outputs.json')
@@ -53,11 +57,12 @@ def deploy_s3_block():
     )
     
     s3.save("capstone-s3-bucket", overwrite=True)
+    logger.info("INFO: Finished se bucket block deployment.")
     
 task(name="deploy redshift credentials")
 def deploy_redshift_credentials():
     logger = get_run_logger()
-    logger.info("INFO: Started flow deployment.")
+    logger.info("INFO: Started redshift block deployment.")
 
     # Opening JSON file
     f = open('outputs.json')
@@ -84,7 +89,7 @@ def deploy_redshift_credentials():
     )
 
     connector.save("redshift-credentials", overwrite=True)
-
+    logger.info("INFO: Finished redshift block deployment.")
     
 def deploy_ecs_task_block():
     
