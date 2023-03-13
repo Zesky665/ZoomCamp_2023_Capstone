@@ -24,6 +24,7 @@ def redshift_setup():
         password=redshift_secret.get()
     )
     cursor = conn.cursor()
+    logger.info("INFO : Connected to Redshift.")
     cursor.execute("create table category (catid int, cargroup varchar, catname varchar, catdesc varchar)")
     cursor.execute("copy category from 's3://testing/category_csv.txt' iam_role 'arn:aws:iam::123:role/RedshiftCopyUnload' csv;")
     cursor.execute("select * from category")
