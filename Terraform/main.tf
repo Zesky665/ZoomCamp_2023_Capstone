@@ -54,29 +54,16 @@ resource "aws_secretsmanager_secret_version" "prefect_api_key_version" {
 }
 
 // Here we are configuring our Redshift cluster
-resource "aws_redshift_cluster" "zoomcamp-capstone-dwh" {
-  cluster_identifier = "zoomcamp-capstone-dwh"
-  database_name      = "capstone_db"
-  master_username    = "zhare_c"
-  master_password    = var.redshift_password
-  node_type          = "dc2.large"
-  cluster_type       = "single-node"
+resource "aws_redshiftserverless_namespace" "zoomcamp-capstone-dwh-namespace" {
+  namespace_name = "zoomcamp-capstone-dwh"
+  db_name      = "capstone_db"
+  admin_username    = "zhare_c"
+  admin_user_password   = var.redshift_password
 
-  // default values
-  port                             = 5439
-  allow_version_upgrade            = true
-  apply_immediately                = true
-  number_of_nodes                  = 1
-  publicly_accessible              = true
-  skip_final_snapshot              = true // default is false, prevents destroy action
-  maintenance_track_name           = "current"
-  manual_snapshot_retention_period = -1
-
-  cluster_subnet_group_name = aws_redshift_subnet_group.redshift_subnet_group.id
   iam_roles                 = [aws_iam_role.redshift-serverless-role.arn]
   depends_on = [
     aws_vpc.prefect_vpc,
-    aws_default_security_group.redshift_security_group,
+    aws_security_group.redshift_security_group,
     aws_redshift_subnet_group.redshift_subnet_group,
     aws_iam_role.redshift-serverless-role
   ]
@@ -85,6 +72,26 @@ resource "aws_redshift_cluster" "zoomcamp-capstone-dwh" {
   tags = {
     Name        = "Redshift Serverless Capstone"
     Environment = "Dev"
+  }
+}
+
+resource "aws_redshiftserverless_workgroup" "zoomcamp-capstone-dwh-workgroup" {
+  depends_on = [aws_redshiftserverless_namespace.zoomcamp-capstone-dwh-namespace]
+
+  namespace_name = aws_redshiftserverless_namespace.zoomcamp-capstone-dwh-namespace.id
+  workgroup_name = "capstone-workgroup"
+  base_capacity  = 32
+  port = 5439
+  
+  security_group_ids = [ aws_security_group.redshift_security_group.id ]
+  subnet_ids         = [ 
+    aws_subnet.redshift-sub-one.id,
+    aws_subnet.redshift-sub-two.id,
+  ]
+  publicly_accessible = true
+  
+  tags = {
+    Name        = "capstone-workgroup"
   }
 }
 
@@ -177,13 +184,29 @@ resource "aws_internet_gateway" "prefect_igw" {
 
 
 
-resource "aws_default_security_group" "redshift_security_group" {
+resource "aws_security_group" "redshift_security_group" {
   vpc_id = aws_vpc.prefect_vpc.id
-  ingress {
+ingress {
+    description = "HTTPS inbound"
     from_port   = 5439
     to_port     = 5439
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+ }
+  egress {
+    description       = "HTTPS outbound"
+    from_port         = 443
+    to_port           = 443
+    protocol          = "tcp"
+    cidr_blocks       = ["0.0.0.0/0"]
+  }
+
+    egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
   tags = {
     Name = "redshift-sg"

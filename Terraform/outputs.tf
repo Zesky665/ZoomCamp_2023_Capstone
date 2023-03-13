@@ -13,11 +13,6 @@ output "bucket_name" {
   value       = aws_s3_bucket.bucket.bucket
 }
 
-output "dwh" {
-  description = "Data Warehouse ARN"
-  value       = aws_redshift_cluster.zoomcamp-capstone-dwh.arn
-}
-
 output "ecs-cluster" {
   description = "ECS Cluster ARN"
   value       = aws_ecs_cluster.capstone-cluster.arn
@@ -40,25 +35,27 @@ output "aws_ecs_service" {
 
 output "redshift_host" {
   description = "Redshift host adress"
-  value       = aws_redshift_cluster.zoomcamp-capstone-dwh.endpoint
+  value       = aws_redshiftserverless_workgroup.zoomcamp-capstone-dwh-workgroup.endpoint
 }
 
 output "redshift_port" {
   description = "Redshift port"
-  value       = aws_redshift_cluster.zoomcamp-capstone-dwh.port
+  value       = aws_redshiftserverless_workgroup.zoomcamp-capstone-dwh-workgroup.port
 }
 
 output "redshift_database" {
   description = "Redshift database"
-  value       = aws_redshift_cluster.zoomcamp-capstone-dwh.database_name
+  value       = aws_redshiftserverless_namespace.zoomcamp-capstone-dwh-namespace.db_name 
 }
+
 output "redshift_user" {
   description = "Redshift admin user"
-  value       = aws_redshift_cluster.zoomcamp-capstone-dwh.master_username
+  value       = aws_redshiftserverless_namespace.zoomcamp-capstone-dwh-namespace.admin_username
+  sensitive = true
 }
 output "redshift_password" {
   description = "Redshift dataabse password"
-  value       = aws_redshift_cluster.zoomcamp-capstone-dwh.master_password
+  value       = aws_redshiftserverless_namespace.zoomcamp-capstone-dwh-namespace.admin_user_password
   sensitive   = true
 }
 
