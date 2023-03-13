@@ -73,12 +73,12 @@ resource "aws_redshift_cluster" "zoomcamp-capstone-dwh" {
   manual_snapshot_retention_period = -1
 
   cluster_subnet_group_name = aws_redshift_subnet_group.redshift_subnet_group.id
-  iam_roles                 = ["${aws_iam_role.redshift_role.arn}"]
+  iam_roles                 = [aws_iam_role.redshift-serverless-role.arn]
   depends_on = [
     aws_vpc.prefect_vpc,
     aws_default_security_group.redshift_security_group,
     aws_redshift_subnet_group.redshift_subnet_group,
-    aws_iam_role.redshift_role
+    aws_iam_role.redshift-serverless-role
   ]
 
 
@@ -221,26 +221,29 @@ resource "aws_redshift_subnet_group" "redshift_subnet_group" {
   }
 }
 
-resource "aws_iam_role_policy" "s3_full_access_policy" {
-  name   = "redshift_s3_policy"
-  role   = aws_iam_role.redshift_role.id
-  policy = <<EOF
+# Create and assign an IAM Role Policy to access S3 Buckets
+resource "aws_iam_role_policy" "redshift-s3-full-access-policy" {
+  name = "capstone-redshift-serverless-role-s3-policy"
+  role = aws_iam_role.redshift-serverless-role.id
+
+policy = <<EOF
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": "s3:*",
-            "Resource": "*"
-        }
-    ]
+   "Version": "2012-10-17",
+   "Statement": [
+     {
+       "Effect": "Allow",
+       "Action": "s3:*",
+       "Resource": "*"
+      }
+   ]
 }
 EOF
 }
 
-resource "aws_iam_role" "redshift_role" {
-  name               = "redshift_role"
-  assume_role_policy = <<EOF
+resource "aws_iam_role" "redshift-serverless-role" {
+  name = "capstone-redshift-serverless-role"
+
+assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -255,9 +258,21 @@ resource "aws_iam_role" "redshift_role" {
   ]
 }
 EOF
+
   tags = {
-    tag-key = "redshift-role"
+    Name        = "capstone-redshift-serverless-role"
   }
+}
+
+# Get the AmazonRedshiftAllCommandsFullAccess policy
+data "aws_iam_policy" "redshift-full-access-policy" {
+  name = "AmazonRedshiftAllCommandsFullAccess"
+}
+
+# Attach the policy to the Redshift role
+resource "aws_iam_role_policy_attachment" "attach-s3" {
+  role       = aws_iam_role.redshift-serverless-role.name
+  policy_arn = data.aws_iam_policy.redshift-full-access-policy.arn
 }
 
 // This data object is going to be
@@ -333,34 +348,21 @@ resource "aws_security_group" "prefect_agent" {
   name        = "prefect-agent-sg-${var.name}"
   description = "ECS Prefect Agent"
   vpc_id      = aws_vpc.prefect_vpc.id
-}
 
-resource "aws_security_group_rule" "https_outbound" {
-  // S3 Gateway interfaces are implemented at the routing level which means we
-  // can avoid the metered billing of a VPC endpoint interface by allowing
-  // outbound traffic to the public IP ranges, which will be routed through
-  // the Gateway interface:
-  // https://docs.aws.amazon.com/AmazonS3/latest/userguide/privatelink-interface-endpoints.html
-
-  ingress {
+    ingress {
     description = "HTTPS inbound"
     from_port   = 5439
     to_port     = 5439
-    security_group_id = aws_security_group.prefect_agent.id
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
  }
   egress {
     description       = "HTTPS outbound"
-    type              = "egress"
-    security_group_id = aws_security_group.prefect_agent.id
     from_port         = 443
     to_port           = 443
     protocol          = "tcp"
     cidr_blocks       = ["0.0.0.0/0"]
   }
-
-
 }
 
 resource "aws_ecs_task_definition" "prefect_agent_task_definition" {
