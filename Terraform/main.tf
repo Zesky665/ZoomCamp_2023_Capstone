@@ -341,13 +341,25 @@ resource "aws_security_group_rule" "https_outbound" {
   // outbound traffic to the public IP ranges, which will be routed through
   // the Gateway interface:
   // https://docs.aws.amazon.com/AmazonS3/latest/userguide/privatelink-interface-endpoints.html
-  description       = "HTTPS outbound"
-  type              = "egress"
-  security_group_id = aws_security_group.prefect_agent.id
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
+
+  ingress {
+    description = "HTTPS inbound"
+    from_port   = 5439
+    to_port     = 5439
+    security_group_id = aws_security_group.prefect_agent.id
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+ }
+  egress {
+    description       = "HTTPS outbound"
+    type              = "egress"
+    security_group_id = aws_security_group.prefect_agent.id
+    from_port         = 443
+    to_port           = 443
+    protocol          = "tcp"
+    cidr_blocks       = ["0.0.0.0/0"]
+  }
+
 
 }
 
