@@ -72,6 +72,15 @@ resource "aws_redshift_cluster" "zoomcamp-capstone-dwh" {
   maintenance_track_name           = "current"
   manual_snapshot_retention_period = -1
 
+  cluster_subnet_group_name = aws_redshift_subnet_group.redshift_subnet_group.id
+  iam_roles                 = ["${aws_iam_role.redshift_role.arn}"]
+  depends_on = [
+    aws_vpc.prefect_vpc,
+    aws_default_security_group.redshift_security_group,
+    aws_redshift_subnet_group.redshift_subnet_group,
+    aws_iam_role.redshift_role
+  ]
+
 
   tags = {
     Name        = "Redshift Serverless Capstone"
@@ -153,8 +162,8 @@ resource "aws_vpc" "prefect_vpc" {
   }
 }
 
-// Create an internet gateway named "prefect_igw"
-// and attach it to the "prefect_vpc" VPC
+# // Create an internet gateway named "prefect_igw"
+# // and attach it to the "prefect_vpc" VPC
 resource "aws_internet_gateway" "prefect_igw" {
   // Here we are attaching the IGW to the 
   // prefect_vpc VPC
@@ -166,12 +175,98 @@ resource "aws_internet_gateway" "prefect_igw" {
   }
 }
 
+
+
+resource "aws_default_security_group" "redshift_security_group" {
+  vpc_id = aws_vpc.prefect_vpc.id
+  ingress {
+    from_port   = 5439
+    to_port     = 5439
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "redshift-sg"
+  }
+  depends_on = [
+    aws_vpc.prefect_vpc
+  ]
+}
+
+resource "aws_subnet" "redshift-sub-one" {
+  cidr_block        = var.public_subnet_redshift_blocks[0]
+  availability_zone = "eu-central-1a"
+  vpc_id            = aws_vpc.prefect_vpc.id
+
+  tags = {
+    Name = "tf-dbsubnet-test-1"
+  }
+}
+
+resource "aws_subnet" "redshift-sub-two" {
+  cidr_block        = var.public_subnet_redshift_blocks[1]
+  availability_zone = "eu-central-1b"
+  vpc_id            = aws_vpc.prefect_vpc.id
+
+  tags = {
+    Name = "tf-dbsubnet-test-1"
+  }
+}
+
+resource "aws_redshift_subnet_group" "redshift_subnet_group" {
+  name       = "redshift-subnet-group"
+  subnet_ids = [aws_subnet.redshift-sub-one.id, aws_subnet.redshift-sub-two.id]
+  tags = {
+    Name = "redshift-subnet-group"
+  }
+}
+
+resource "aws_iam_role_policy" "s3_full_access_policy" {
+  name   = "redshift_s3_policy"
+  role   = aws_iam_role.redshift_role.id
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role" "redshift_role" {
+  name               = "redshift_role"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "redshift.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+  tags = {
+    tag-key = "redshift-role"
+  }
+}
+
 // This data object is going to be
 // holding all the available availability
 // zones in our defined region
 data "aws_availability_zones" "available" {
   state = "available"
 }
+
 
 // Create a group of public subnets based on the variable subnet_count.public
 resource "aws_subnet" "prefect_public_subnet" {
