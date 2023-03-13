@@ -24,11 +24,19 @@ def redshift_setup():
         password=redshift_secret.get()
     )
     cursor = conn.cursor()
+    conn.autocommit = True
+    logger.info(f'INFO : ${cursor}')
     logger.info("INFO : Connected to Redshift.")
-    cursor.execute("create table category (catid int, cargroup varchar, catname varchar, catdesc varchar)")
-    cursor.execute("copy category from 's3://testing/category_csv.txt' iam_role 'arn:aws:iam::123:role/RedshiftCopyUnload' csv;")
-    cursor.execute("select * from category")
-    print(cursor.fetchall())
+    cursor.execute('''CREATE TABLE Persons (
+        PersonID int,
+        LastName varchar(255),
+        FirstName varchar(255),
+        Address varchar(255),
+        City varchar(255)
+    );''')
+    result = cursor.execute("INSERT INTO Persons ( PersonID, LastName, FirstName, Address, City) VALUES (1, 'Testerson', 'Tester', 'Test-St', 'Testvile')")
+    logger.info(f'INFO: {result}')
+
     
 
 if __name__ == "__main__":

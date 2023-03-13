@@ -102,3 +102,13 @@ variable "public_subnet_cidr_blocks" {
     "10.0.4.0/24"
   ]
 }
+
+variable "redshift_subnet_cidr_blocks" {
+  description = "Availability CIDR blocks for public subnets"
+  type        = list(string)
+  default = [
+    "10.0.5.0/24",
+    "10.0.6.0/24",
+    "10.0.7.0/24"  
+    ]
+}
