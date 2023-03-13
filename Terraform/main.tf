@@ -54,28 +54,44 @@ resource "aws_secretsmanager_secret_version" "prefect_api_key_version" {
 }
 
 // Here we are configuring our Redshift cluster
-resource "aws_redshift_cluster" "zoomcamp-capstone-dwh" {
-  cluster_identifier = "zoomcamp-capstone-dwh"
-  database_name      = "capstone_db"
-  master_username    = "zhare_c"
-  master_password    = var.redshift_password
-  node_type          = "dc2.large"
-  cluster_type       = "single-node"
+resource "aws_redshiftserverless_namespace" "zoomcamp-capstone-dwh-namespace" {
+  namespace_name = "zoomcamp-capstone-dwh"
+  db_name      = "capstone_db"
+  admin_username    = "zhare_c"
+  admin_user_password   = var.redshift_password
 
-  // default values
-  port                             = 5439
-  allow_version_upgrade            = true
-  apply_immediately                = true
-  number_of_nodes                  = 1
-  publicly_accessible              = true
-  skip_final_snapshot              = true // default is false, prevents destroy action
-  maintenance_track_name           = "current"
-  manual_snapshot_retention_period = -1
+  iam_roles                 = [aws_iam_role.redshift-serverless-role.arn]
+  depends_on = [
+    aws_vpc.prefect_vpc,
+    aws_security_group.redshift_security_group,
+    aws_redshift_subnet_group.redshift_subnet_group,
+    aws_iam_role.redshift-serverless-role
+  ]
 
 
   tags = {
     Name        = "Redshift Serverless Capstone"
     Environment = "Dev"
+  }
+}
+
+resource "aws_redshiftserverless_workgroup" "zoomcamp-capstone-dwh-workgroup" {
+  depends_on = [aws_redshiftserverless_namespace.zoomcamp-capstone-dwh-namespace]
+
+  namespace_name = aws_redshiftserverless_namespace.zoomcamp-capstone-dwh-namespace.id
+  workgroup_name = "capstone-workgroup"
+  base_capacity  = 32
+  port = 5439
+  
+  security_group_ids = [ aws_security_group.redshift_security_group.id ]
+  subnet_ids         = [ 
+    aws_subnet.redshift-sub-one.id,
+    aws_subnet.redshift-sub-two.id,
+  ]
+  publicly_accessible = true
+  
+  tags = {
+    Name        = "capstone-workgroup"
   }
 }
 
@@ -153,8 +169,8 @@ resource "aws_vpc" "prefect_vpc" {
   }
 }
 
-// Create an internet gateway named "prefect_igw"
-// and attach it to the "prefect_vpc" VPC
+# // Create an internet gateway named "prefect_igw"
+# // and attach it to the "prefect_vpc" VPC
 resource "aws_internet_gateway" "prefect_igw" {
   // Here we are attaching the IGW to the 
   // prefect_vpc VPC
@@ -166,12 +182,129 @@ resource "aws_internet_gateway" "prefect_igw" {
   }
 }
 
+
+
+resource "aws_security_group" "redshift_security_group" {
+  vpc_id = aws_vpc.prefect_vpc.id
+ingress {
+    description = "HTTPS inbound"
+    from_port   = 5439
+    to_port     = 5439
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+ }
+  egress {
+    description       = "HTTPS outbound"
+    from_port         = 443
+    to_port           = 443
+    protocol          = "tcp"
+    cidr_blocks       = ["0.0.0.0/0"]
+  }
+
+    egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+  tags = {
+    Name = "redshift-sg"
+  }
+  depends_on = [
+    aws_vpc.prefect_vpc
+  ]
+}
+
+resource "aws_subnet" "redshift-sub-one" {
+  cidr_block        = var.public_subnet_redshift_blocks[0]
+  availability_zone = "eu-central-1a"
+  vpc_id            = aws_vpc.prefect_vpc.id
+
+  tags = {
+    Name = "tf-dbsubnet-test-1"
+  }
+}
+
+resource "aws_subnet" "redshift-sub-two" {
+  cidr_block        = var.public_subnet_redshift_blocks[1]
+  availability_zone = "eu-central-1b"
+  vpc_id            = aws_vpc.prefect_vpc.id
+
+  tags = {
+    Name = "tf-dbsubnet-test-1"
+  }
+}
+
+resource "aws_redshift_subnet_group" "redshift_subnet_group" {
+  name       = "redshift-subnet-group"
+  subnet_ids = [aws_subnet.redshift-sub-one.id, aws_subnet.redshift-sub-two.id]
+  tags = {
+    Name = "redshift-subnet-group"
+  }
+}
+
+# Create and assign an IAM Role Policy to access S3 Buckets
+resource "aws_iam_role_policy" "redshift-s3-full-access-policy" {
+  name = "capstone-redshift-serverless-role-s3-policy"
+  role = aws_iam_role.redshift-serverless-role.id
+
+policy = <<EOF
+{
+   "Version": "2012-10-17",
+   "Statement": [
+     {
+       "Effect": "Allow",
+       "Action": "s3:*",
+       "Resource": "*"
+      }
+   ]
+}
+EOF
+}
+
+resource "aws_iam_role" "redshift-serverless-role" {
+  name = "capstone-redshift-serverless-role"
+
+assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "redshift.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+
+  tags = {
+    Name        = "capstone-redshift-serverless-role"
+  }
+}
+
+# Get the AmazonRedshiftAllCommandsFullAccess policy
+data "aws_iam_policy" "redshift-full-access-policy" {
+  name = "AmazonRedshiftAllCommandsFullAccess"
+}
+
+# Attach the policy to the Redshift role
+resource "aws_iam_role_policy_attachment" "attach-s3" {
+  role       = aws_iam_role.redshift-serverless-role.name
+  policy_arn = data.aws_iam_policy.redshift-full-access-policy.arn
+}
+
 // This data object is going to be
 // holding all the available availability
 // zones in our defined region
 data "aws_availability_zones" "available" {
   state = "available"
 }
+
 
 // Create a group of public subnets based on the variable subnet_count.public
 resource "aws_subnet" "prefect_public_subnet" {
@@ -238,22 +371,29 @@ resource "aws_security_group" "prefect_agent" {
   name        = "prefect-agent-sg-${var.name}"
   description = "ECS Prefect Agent"
   vpc_id      = aws_vpc.prefect_vpc.id
-}
 
-resource "aws_security_group_rule" "https_outbound" {
-  // S3 Gateway interfaces are implemented at the routing level which means we
-  // can avoid the metered billing of a VPC endpoint interface by allowing
-  // outbound traffic to the public IP ranges, which will be routed through
-  // the Gateway interface:
-  // https://docs.aws.amazon.com/AmazonS3/latest/userguide/privatelink-interface-endpoints.html
-  description       = "HTTPS outbound"
-  type              = "egress"
-  security_group_id = aws_security_group.prefect_agent.id
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
+    ingress {
+    description = "HTTPS inbound"
+    from_port   = 5439
+    to_port     = 5439
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+ }
+  egress {
+    description       = "HTTPS outbound"
+    from_port         = 443
+    to_port           = 443
+    protocol          = "tcp"
+    cidr_blocks       = ["0.0.0.0/0"]
+  }
 
+    egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
 }
 
 resource "aws_ecs_task_definition" "prefect_agent_task_definition" {

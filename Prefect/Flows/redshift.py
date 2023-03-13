@@ -2,6 +2,7 @@ from prefect_sqlalchemy import DatabaseCredentials
 from prefect.blocks.system import Secret
 from prefect import flow, task, get_run_logger
 import redshift_connector
+import psycopg2
 
 @task(name="log-example-task")
 def logger_task():
@@ -16,6 +17,7 @@ def redshift_setup():
     logger = logger_task()
     logger.info("INFO : Starting.")
     logger.info("INFO : Connecting to Redshift.")
+    # conn=psycopg2.connect("dbname=capstone_db host=zoomcamp-capstone-dwh.clnzcxovuk8p.eu-central-1.redshift.amazonaws.com port=5439 user=zhare_c password=NoneShallPass111665")
     conn = redshift_connector.connect(
         host=database_block.host,
         database=database_block.database,
@@ -24,12 +26,18 @@ def redshift_setup():
         password=redshift_secret.get()
     )
     cursor = conn.cursor()
+    conn.autocommit = True
+    logger.info(f'INFO : ${cursor}')
     logger.info("INFO : Connected to Redshift.")
-    cursor.execute("create table category (catid int, cargroup varchar, catname varchar, catdesc varchar)")
-    cursor.execute("copy category from 's3://testing/category_csv.txt' iam_role 'arn:aws:iam::123:role/RedshiftCopyUnload' csv;")
-    cursor.execute("select * from category")
-    print(cursor.fetchall())
-    
+    cursor.execute('''CREATE TABLE Persons (
+    PersonID int,
+    LastName varchar(255),
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255)
+);''')
+    result = cursor.execute("INSERT INTO Persons ( PersonID, LastName, FirstName, Address, City) VALUES (1, 'Testerson', 'Tester', 'Test-St', 'Testvile')")
+    logger.info(f'INFO: {result}')
 
 if __name__ == "__main__":
     redshift_setup()
