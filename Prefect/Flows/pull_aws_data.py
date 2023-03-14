@@ -82,7 +82,7 @@ def copy_to_redshift():
     logger.info("INFO : Work in progress.")
   
 @flow(name="aws_to_redshift_etl") 
-def pull_data_aws():
+def pull_aws_data():
     redshift_setup()
     pull_data_from_aws()
     copy_to_redshift
@@ -93,7 +93,7 @@ if __name__ == "__main__":
     
     # function call
 
-    pull_data_aws()
+    pull_aws_data()
     # displaying the memory
     # print(tracemalloc.get_traced_memory())
     

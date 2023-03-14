@@ -1,6 +1,7 @@
 from prefect import get_run_logger, flow, task
 from test_deploy import test
 from redshift import redshift_setup
+from pull_aws_data import pull_aws_data
 from prefect.deployments import Deployment
 from prefect_aws import S3Bucket, ECSTask
 
@@ -58,6 +59,24 @@ def deploy_redshift_flow():
     deployment.apply()
     logger.info("INFO: Finished redshift flow deployment.")
     
+@task()
+def deploy_aws_etl_flow():
+    logger = get_run_logger()
+    logger.info("INFO: Started aws_etl flow deployment.")
+    s3_block = S3Bucket.load("capstone-s3-bucket")
+
+    deployment = Deployment.build_from_flow(
+        flow=pull_aws_data,
+        name="deploy-redshift",
+        parameters={},
+        infra_overrides={"env": {"PREFECT_LOGGING_LEVEL": "DEBUG"}},
+        work_queue_name="default",
+        storage=s3_block,
+    )
+    
+    deployment.apply()
+    logger.info("INFO: Finished aws_etl flow deployment.")
+    
 @flow()
 def deploy_flows():
     logger = get_run_logger()
@@ -65,6 +84,7 @@ def deploy_flows():
     deploy_test_flow()
     deploy_deploy_flow()
     deploy_redshift_flow()
+    deploy_aws_etl_flow
     logger.info("INFO: Finished flow deployment.")
 
 if __name__ == "__main__":
