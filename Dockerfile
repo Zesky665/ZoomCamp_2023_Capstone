@@ -12,6 +12,12 @@ RUN pip install prefect-sqlalchemy
 
 RUN pip install redshift_connector
 
+RUN pip install pandas
+
+RUN pip install boto3
+
+RUN pip install pyarrow
+
 COPY Prefect/Flows opt/Prefect/Flows
 
 COPY login.sh .
