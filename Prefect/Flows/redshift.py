@@ -16,6 +16,11 @@ def redshift_setup():
     logger = logger_task()
     logger.info("INFO : Starting.")
     logger.info("INFO : Connecting to Redshift.")
+    logger.info(f'INFO : Redshfit creds: host: {database_block.host}')
+    logger.info(f'INFO : Redshfit creds: host: {database_block.database}')
+    logger.info(f'INFO : Redshfit creds: host: {database_block.port}')
+    logger.info(f'INFO : Redshfit creds: host: {database_block.username}')
+    logger.info(f'INFO : Redshfit creds: host: {redshift_secret.get()}')
     conn = redshift_connector.connect(
         host=database_block.host,
         database=database_block.database,
