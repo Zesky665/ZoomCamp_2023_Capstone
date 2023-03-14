@@ -141,7 +141,7 @@ def deploy_ecs_task_block():
     # Closing file
     f.close()
     
-@flow()
+@flow(name="deploy block flow")
 def deploy_blocks(aws_key_id, aws_key):
 
     deploy_aws_credentials_block(aws_key_id, aws_key)
