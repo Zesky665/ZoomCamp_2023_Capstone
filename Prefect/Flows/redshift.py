@@ -32,7 +32,7 @@ def redshift_setup():
     conn.autocommit = True
     logger.info(f'INFO : ${cursor}')
     logger.info("INFO : Connected to Redshift.")
-    cursor.execute('''CREATE TABLE Persons (
+    cursor.execute('''CREATE TABLE IF NOT EXISTS Persons (
         PersonID int,
         LastName varchar(255),
         FirstName varchar(255),
