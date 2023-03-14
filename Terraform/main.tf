@@ -240,6 +240,17 @@ resource "aws_security_group" "prefect_agent" {
   vpc_id      = aws_vpc.prefect_vpc.id
 }
 
+resource "aws_security_group_rule" "allow-all" {
+  description       = "Allow all"
+  type              = "egress"
+  security_group_id = aws_security_group.prefect_agent.id
+  from_port        = 0
+  to_port          = 0
+  protocol         = "-1"
+  cidr_blocks      = ["0.0.0.0/0"]
+  ipv6_cidr_blocks = ["::/0"]
+}
+
 resource "aws_security_group_rule" "https_outbound" {
   // S3 Gateway interfaces are implemented at the routing level which means we
   // can avoid the metered billing of a VPC endpoint interface by allowing
